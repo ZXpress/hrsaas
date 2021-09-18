@@ -13,7 +13,7 @@ service.interceptors.response.use(response => {
     if (success) {
         return data
     } else {
-        Message.error(message) // 提示错误消息
+        Message.error(message) // 提示错误消息 然后进到登录页面的的catch里面 最后finally
         return Promise.reject(new Error(message))
     }
 }, error => {
