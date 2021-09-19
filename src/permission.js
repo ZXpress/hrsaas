@@ -12,7 +12,7 @@ const whiteList = ['/login', '/404'] // 定义白名单
 // next()放过
 // next(false)跳转终止
 // next(地址)跳转到某个地址
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     nprogress.start() // 开启进度条
     if (store.getters.token) {
         // 如果有token
@@ -20,6 +20,12 @@ router.beforeEach((to, from, next) => {
             // 如果访问的是登录页
             next('/') // 跳到主页
         } else {
+            // 只有放过通行的时候获取用户资料
+            // 如果vuex中有用户的id表示已经有资料不要获取
+            if (!store.getters.userId) {
+                // 如果没有才需要获取
+                await store.dispatch('user/getUserInfo') // 异步操作 需要await改为同步
+            }
             next()
         }
     } else {
