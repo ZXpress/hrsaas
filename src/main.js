@@ -12,10 +12,16 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+import Component from '@/components'
+
 import * as directives from '@/directives'
+
+import * as filters from '@/filters' // 引入工具类 
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
+Vue.use(Component) // 注册自定义组件
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
@@ -26,6 +32,13 @@ Vue.use(ElementUI, { locale })
 Object.keys(directives).forEach(key => {
   // 注册自定义指令
   Vue.directive(key, directives[key])
+})
+
+// 注册全局的过滤器
+// console.log(Object.keys(filters));
+Object.keys(filters).forEach(key => {
+  // 注册过滤器
+  Vue.filter(key, filters[key])
 })
 
 Vue.config.productionTip = false
