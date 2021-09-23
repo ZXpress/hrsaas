@@ -1,15 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
-    <!-- PageTools 全局注册的组件 -->
-    <PageTools :showBefore="true">
-      <template #before>
-        <span>我我我我我我</span>
-      </template>
-      <template #after>
-        <el-button type="primary"> 我我</el-button>
-      </template>
-    </PageTools>
   </div>
 </template>
 

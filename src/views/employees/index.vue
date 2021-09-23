@@ -8,8 +8,15 @@
         </template>
         <!-- 右侧显示 -->
         <template #after>
-          <el-button size="small" type="warning">导入</el-button>
-          <el-button size="small" type="danger">导出</el-button>
+          <el-button
+            size="small"
+            type="warning"
+            @click="$router.push('/import')"
+            >Excel导入</el-button
+          >
+          <el-button size="small" type="danger" @click="exportData"
+            >Excel导出</el-button
+          >
           <el-button size="small" type="primary" @click="showDialog = true"
             >新增员工</el-button
           >
@@ -78,6 +85,7 @@
 import { getEmployeeList, delEmployee } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees"; // 引入员工的枚举对象
 import AddDemployee from "./components/add-employee";
+import { formatDate } from "@/filters";
 
 export default {
   components: {
@@ -126,6 +134,67 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    // 导出excel方法
+    exportData() {
+      // 因为数据中的key是英文，想要导出的表头是中文的话，需要将中文和英文做对应
+      const headers = {
+        姓名: "username",
+        手机号: "mobile",
+        入职日期: "timeOfEntry",
+        聘用形式: "formOfEmployment",
+        转正日期: "correctionTime",
+        工号: "workNumber",
+        部门: "departmentName",
+      };
+      // 懒加载引入Export2Excel
+      // excel是引入文件导出的方法
+      import("@/vendor/Export2Excel").then(async (excel) => {
+        const { rows } = await getEmployeeList({
+          page: 1,
+          size: this.page.total,
+        });
+        // rows 为[{username:'张三',mobile:'13911111111'}] 需要转换为 [['张三','13911111111']]的形式
+        const data = this.formatJson(headers, rows); // 方法返回的data为需要的解构
+        const multiHeader = [["姓名", "主要信息", "", "", "", "", "部门"]]; // multiHeader里面是一个二维数组，里面的一个元素是一行表头
+        const merges = ["A1:A2", "B1:F1", "G1:G2"]; // 实现其合并的效果
+        excel.export_json_to_excel({
+          header: Object.keys(headers), //表头 必填
+          data, //具体数据 必填 需要获取所有数据
+          filename: "员工资料表",
+          multiHeader,
+          merges,
+        });
+      });
+    },
+
+    // 将表头数据和数据进行对应进行转换
+    // [{}] => [[]]
+    formatJson(headers, rows) {
+      return rows.map((item) => {
+        // item是对象  => 转化成只有值的数组 => 数组值的顺序依赖headers  {username: '张三'  }
+        // Object.keys(headers)  => ["姓名", "手机号",...]
+        return Object.keys(headers).map((key) => {
+          // 需要判断
+          if (
+            headers[key] === "timeOfEntry" ||
+            headers[key] === "correctionTime"
+          ) {
+            // 格式化日期
+            return formatDate(item[headers[key]]);
+          } else if (headers[key] === "formOfEmployment") {
+            // 格式化聘用形式
+            const obj = EmployeeEnum.hireType.find(
+              (obj) => obj.id === item[headers[key]]
+            );
+            return obj ? obj.value : "未知";
+          }
+          return item[headers[key]];
+        }); // /  得到 ['张三'，’129‘，’dd‘,'dd']
+      });
+      // return rows.map((item) =>
+      //   Object.keys(headers).map((key) => item[headers[key]])
+      // );
     },
   },
 };
