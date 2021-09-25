@@ -27,6 +27,23 @@
         <el-table v-loading="loading" :data="list">
           <el-table-column type="index" label="序号" sortable="" />
           <el-table-column prop="username" label="姓名" sortable="" />
+          <el-table-column width="120px" label="头像" align="center">
+            <!-- 插槽显示图片 -->
+            <template v-slot="{ row }">
+              <img
+                @click="showQrCode(row.staffPhoto)"
+                v-imageerror="require('@/assets/common/head.jpg')"
+                :src="row.staffPhoto"
+                style="
+                  border-radius: 50%;
+                  width: 100px;
+                  height: 100px;
+                  padding: 10px;
+                "
+                alt=""
+              />
+            </template>
+          </el-table-column>
           <el-table-column prop="workNumber" label="工号" sortable="" />
           <el-table-column
             prop="formOfEmployment"
@@ -48,7 +65,12 @@
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template v-slot="{ row }">
-              <el-button type="text" size="small">查看</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="$router.push(`/employees/detail/${row.id}`)"
+                >查看</el-button
+              >
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -78,6 +100,12 @@
     </div>
     <!-- 放置组件 -->
     <AddDemployee :showDialog.sync="showDialog"></AddDemployee>
+    <!-- 二维码 -->
+    <el-dialog title="二维码" :visible.sync="showCodeDialog">
+      <el-row type="flex" justify="center">
+        <canvas ref="myCanvas" />
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,6 +114,7 @@ import { getEmployeeList, delEmployee } from "@/api/employees";
 import EmployeeEnum from "@/api/constant/employees"; // 引入员工的枚举对象
 import AddDemployee from "./components/add-employee";
 import { formatDate } from "@/filters";
+import QrCode from "qrcode";
 
 export default {
   components: {
@@ -101,6 +130,7 @@ export default {
       },
       loading: false, // 显示遮罩层
       showDialog: false, // 默认关闭弹层
+      showCodeDialog: false, // 显示二维码弹层
     };
   },
   created() {
@@ -195,6 +225,18 @@ export default {
       // return rows.map((item) =>
       //   Object.keys(headers).map((key) => item[headers[key]])
       // );
+    },
+    showQrCode(url) {
+      // url存在才弹出
+      if (url) {
+        this.showCodeDialog = true; // 页面的渲染是异步的，数据更新了弹层不会立即出现
+        this.$nextTick(() => {
+          // 此时可以确认已经有ref对象了
+          QrCode.toCanvas(this.$refs.myCanvas, url); // 将地址转换为二维码
+        });
+      } else {
+        this.$message.warning("该用户还未设置头像");
+      }
     },
   },
 };
