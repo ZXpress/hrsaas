@@ -21,6 +21,10 @@ import * as filters from '@/filters' // 引入工具类
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import Print from 'vue-print-nb' // 打印插件
+
+Vue.use(Print);
+
 Vue.use(Component) // 注册自定义组件
 
 // set ElementUI lang to EN
