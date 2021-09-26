@@ -10,6 +10,7 @@ import attendancesRouter from './modules/attendances'
 import salarysRouter from './modules/salary'
 import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
+import userRouter from './modules/user'
 
 Vue.use(Router)
 
@@ -74,7 +75,7 @@ export const constantRoutes = [
       component: () => import('@/views/import')
     }]
   },
-
+  userRouter
   // 404 page must be placed at the end !!!
   // 404已经放在动态路由的最后
 ]

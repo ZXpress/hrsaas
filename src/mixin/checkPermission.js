@@ -1,4 +1,4 @@
-// 做一个混入对象
+// 做一个混入对象(没有成功)
 
 import store from '@/store'
 
