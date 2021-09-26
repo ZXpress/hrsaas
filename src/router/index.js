@@ -5,9 +5,9 @@ import Router from 'vue-router'
 import approvalsRouter from './modules/approvals'
 import departmentsRouter from './modules/departments'
 import employeesRouter from './modules/employees'
-import permissionRouter from './modules/permission'
+import permissionRouter from './modules/permissions'
 import attendancesRouter from './modules/attendances'
-import salarysRouter from './modules/salarys'
+import salarysRouter from './modules/salary'
 import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
 
@@ -76,7 +76,7 @@ export const constantRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // 404已经放在动态路由的最后
 ]
 
 // 定义动态路由变量
@@ -95,7 +95,7 @@ export const asyncRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes, ...asyncRoutes] // 静态路由和动态路由的临时合并
+  routes: [...constantRoutes] // 静态路由和动态路由的临时合并
 })
 
 const router = createRouter()

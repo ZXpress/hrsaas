@@ -23,6 +23,8 @@ import '@/permission' // permission control
 
 import Print from 'vue-print-nb' // 打印插件
 
+import CheckPermission from '@/mixin/checkPermission'
+
 Vue.use(Print);
 
 Vue.use(Component) // 注册自定义组件
@@ -31,6 +33,9 @@ Vue.use(Component) // 注册自定义组件
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
+
+// 全局混入检查对象  表示所有的组件都拥有了检查的方法
+Vue.use(CheckPermission)
 
 // 遍历所有的导出的指令对象 完成自定义全局注册
 Object.keys(directives).forEach(key => {
