@@ -13,6 +13,12 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu">
+      <!-- 放置多语言插件 -->
+      <LangSelect class="right-menu-item"></LangSelect>
+      <!-- 放置全屏插件图标 -->
+      <ScreenFull class="right-menu-item" />
+      <!-- 切换主题组件 -->
+      <ThemePicker class="right-menu-item"></ThemePicker>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img
@@ -133,7 +139,7 @@ export default {
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
+      vertical-align: middle;
 
       &.hover-effect {
         cursor: pointer;
